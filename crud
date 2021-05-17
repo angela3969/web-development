@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    
+    <?php
+        $conn = mysqli_connect('localhost','root','root','studentList');
+        
+        $sql1 = "select * from studentList";
+        $result1 = mysqli_query($conn,$sql1);
+        $objectNumEachPage = 2;
+        $totalObjectNum = mysqli_num_rows($result1);
+        $num = ceil($totalObjectNum/$objectNumEachPage);
+        
+        $page = $_GET[page];
+        if($page==$num){
+            $remainder = $totalObjectNum%$objectNumEachPage;
+            if($remainder !=0){
+                $start = $page*$objectNumEachPage-($objectNumEachPage-1);
+                $end = $start+$remainder;
+            }else{
+                $start = $page*$objectNumEachPage-($objectNumEachPage-1);
+                $end = $page*$objectNumEachPage;
+            }
+        }else{
+            $start = $page*$objectNumEachPage-($objectNumEachPage-1);
+            $end = $page*$objectNumEachPage;
+        }
+        
+        $sql = "select * from studentList where id between $start and $end";
+        $result = mysqli_query($conn,$sql);
+        while($row = mysqli_fetch_array($result)){
+            echo $row[id]."-".$row[name]."<br>";
+        }
+    
+           
+        for($i =1; $i<=$num; $i++){
+            echo "<a href = 'crud4.php?page=$i'>$i</a>";
+        }
+    ?>
+</body>
+</html>
